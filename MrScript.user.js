@@ -2,7 +2,7 @@
 // @name            Mr. Script Redux
 // @namespace       https://github.com/taeram/kol-mr-script
 // @description     Kingdom of Loathing Helper
-// @version         1.82.WEBPACK_DATESTAMP
+// @version         1.82
 // @author          Lukifer
 // @contributor     Ohayou
 // @contributor     Hellion
