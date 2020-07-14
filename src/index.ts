@@ -23,22 +23,9 @@
 // @unwrap
 // ==/UserScript==
 
-var place = location.pathname.replace(/\/|\.(php|html)$/gi, "").toLowerCase();
-if (place === "place") {
-    var match = location.search.match(/whichplace=([0-9a-zA-Z_\-]*)/);
-    if (match.length > 1) place = match[1];
-}
-//console.time("Mr. Script @ " + place);
-//GM_log("at:" + place);
 
-// n.b. version number should always be a 3-digit number.  If you move to 1.9, call it 1.9.0.  Don't go to 1.8.10 or some such.
-var MAXLIMIT = 999;
-var ENABLE_QS_REFRESH = 1;
-var DISABLE_ITEM_DB = 0;
-
-var thePath = location.pathname;
-
-var global = this; //, mr = unsafeWindow.top.mr = global;
+var prefAutoclear = GetPref('autoclear');
+var prefSpoilers = GetPref('zonespoil') == 1;
 
 // server variable lets you be logged on to different servers with different characters and keep them straight.
 // not nearly so nifty now that there's only www and dev....
@@ -46,42 +33,6 @@ var server = location.host + "/";
 var serverNo = (server.match(/(.)\./) || {1: "L"})[1]; 	// the "7" in www7.X, or an "L" if no . is in the hostname.
 
 var pwd = GM_getValue('hash.' + server.split('.')[0]);
-
-var prefAutoclear = GetPref('autoclear');
-var prefSpoilers = GetPref('zonespoil') == 1;
-
-//really cool hack to capture DomNodeInserts without having to use the deprecated DOMNodeInserted event,
-//which is apparently a huge performance drain:
-//after the document is loaded, slap an invisible animation onto any "interesting" new elements that arrive.
-//bind a handler to the animation-start event which then does whatever needs doing with the new elements.
-//in our case, the AJAX 'Results:' boxes are always starting with <center><center> and are in a div named effdiv.
-
-addCss('@-moz-keyframes nodeInserted { from { clip: rect(1px,auto,auto,auto) } to { clip: rect(0px,auto,auto,auto) } }');
-
-//specify what an "interesting" element is... any "Results:" block has this form.
-
-addCss('center > center > table > tbody > tr > td > b { animation-duration: 0.001s; animation-name: nodeInserted }');
-//this gets us right down to a <b>Results:</b> header, I hope.
-
-$(document).on('animationstart', ResultHandler);
-
-anywhere(); // stuff we always add where we can
-
-// town_right to cover gourds, and forestvillage for untinkered results...
-if (/^(adventure|choice|craft|knoll|knoll_friendly|shore|town_right|forestvillage|place|multiuse)$/.test(place)) {
-    dropped_item();
-}
-// where are we and what do we thus want to do?
-var handler;
-if ((handler = global["at_" + place])) {
-    handler();
-}
-if ((handler = prefSpoilers && global["spoil_" + place])) {
-    handler();
-}
-
-global = null;
-handler = null;
 
 // no imperative top-level code below here; the rest is function definitions:
 
@@ -92,6 +43,45 @@ jQuery.prototype.toString = function () {
 String.prototype.trim = function () {
     return this.replace(/^\s*/, "").replace(/\s*$/, "");
 }
+
+function main() {
+    var place = location.pathname.replace(/\/|\.(php|html)$/gi, "").toLowerCase();
+    if (place === "place") {
+        var match = location.search.match(/whichplace=([0-9a-zA-Z_\-]*)/);
+        if (match.length > 1) place = match[1];
+    }
+
+    if (typeof window["at_" + place] !== "undefined") {
+        window["at_" + place]();
+    }
+
+    if (prefSpoilers && typeof window["spoil_" + place] !== "undefined")
+    {
+        window["spoil_" + place]();
+    }
+
+    //really cool hack to capture DomNodeInserts without having to use the deprecated DOMNodeInserted event,
+    //which is apparently a huge performance drain:
+    //after the document is loaded, slap an invisible animation onto any "interesting" new elements that arrive.
+    //bind a handler to the animation-start event which then does whatever needs doing with the new elements.
+    //in our case, the AJAX 'Results:' boxes are always starting with <center><center> and are in a div named effdiv.
+    addCss('@-moz-keyframes nodeInserted { from { clip: rect(1px,auto,auto,auto) } to { clip: rect(0px,auto,auto,auto) } }');
+
+    //specify what an "interesting" element is... any "Results:" block has this form.
+    addCss('center > center > table > tbody > tr > td > b { animation-duration: 0.001s; animation-name: nodeInserted }');
+
+    //this gets us right down to a <b>Results:</b> header, I hope.
+    $(document).on('animationstart', ResultHandler);
+
+    anywhere(); // stuff we always add where we can
+
+    // town_right to cover gourds, and forestvillage for untinkered results...
+    if (/^(adventure|choice|craft|knoll|knoll_friendly|shore|town_right|forestvillage|place|multiuse)$/.test(place)) {
+        dropped_item();
+    }
+
+}
+main();
 
 // ANYWHERE: stuff that we want to do on every possible occasion.
 function anywhere() {
@@ -107,7 +97,7 @@ function dropped_item() {
     $('img').each(function () {
         var onclick = this.getAttribute("onclick");
         if (/desc/.test(onclick || "")) {
-            AddLinks(onclick, this.parentNode.parentNode, null, thePath);
+            AddLinks(onclick, this.parentNode.parentNode, null, location.pathname);
         }
     });
 }
@@ -142,7 +132,7 @@ function ResultHandler(e) {
             process_outfit(btext, bnode);
         } else if (mystuff.indexOf("You acquire an item:") != -1) {
             var theItem = $(bnode).parent().parent().get(0);
-            AddLinks(null, theItem, null, thePath);
+            AddLinks(null, theItem, null, location.pathname);
         } else if (mystuff.indexOf("You acquire an effect:") != -1) {
             process_effect(btext, bnode);
         } else { // some non-equip/acquire event took place, such as a quest item opening a zone.
@@ -663,7 +653,7 @@ function FindMaxQuantity(item, howMany, deefault, safeLevel) {
 
         default:
             if (deefault == 1) {
-                if (howMany > MAXLIMIT) return MAXLIMIT;
+                if (howMany > 999) return 999;
                 else return howMany;
             } else return 0;
     }
@@ -2763,7 +2753,7 @@ function at_guild() {
     $('img').each(function () {
         var onclick = this.getAttribute('onclick');
         if (onclick != undefined && onclick.indexOf("desc") != -1) {
-            AddLinks(onclick, this.parentNode.parentNode, null, thePath);
+            AddLinks(onclick, this.parentNode.parentNode, null, location.pathname);
         }
     });
     var subloc = document.location.search;
@@ -3138,7 +3128,7 @@ function at_mallstore() {
     if (img == undefined) return;
     var onclick = img.getAttribute("onclick");
     if (onclick != undefined && onclick.indexOf("desc") != -1) {
-        AddLinks(onclick, img.parentNode.parentNode, img.parentNode.parentNode.parentNode.parentNode.parentNode, thePath);
+        AddLinks(onclick, img.parentNode.parentNode, img.parentNode.parentNode.parentNode.parentNode.parentNode, location.pathname);
     }
     for (var i = 1, len = document.images.length; i < len; i++) {
         img = document.images[i];
@@ -3344,7 +3334,7 @@ function at_inventory() {
             process_outfit(bText, jb);
         } else if (resultsText.indexOf('You acquire an item') != -1) {
             var theItem = jb.parent().parent().get(0);
-            AddLinks(null, theItem, null, thePath);
+            AddLinks(null, theItem, null, location.pathname);
         } else if (resultsText.indexOf('acquire an effect') != -1) {
             process_effect(bText, jb);
         } else {
@@ -3583,7 +3573,7 @@ function at_store() {
         }
 
         if (descId != undefined) {
-            var whut = AddLinks(descId, bText.parent().parent().get(0), acquireText, thePath);
+            var whut = AddLinks(descId, bText.parent().parent().get(0), acquireText, location.pathname);
             //if ((whut == 'skill' || whut == 'use') && firstTable.children('tr:eq(1)').text().indexOf("an item:") == -1)
             //NumberLink(bText.get(0));
         }
@@ -3607,7 +3597,7 @@ function at_monkeycastle() {
     $('img:first').each(function () {
         var onclick = this.getAttribute('onclick');
         if (onclick != undefined && onclick.indexOf("desc") != -1)
-            AddLinks(onclick, this.parentNode.parentNode, null, thePath);
+            AddLinks(onclick, this.parentNode.parentNode, null, location.pathname);
     });
     //addWhere.append(AppendLink('[old man, see?]','oldman.php')); break;
 }
@@ -3754,7 +3744,7 @@ function at_hermit() {
                 var num = integer(bText.text().split(" ten-leaf")[0]);
                 bText.parent().append(AppendLink('[disassemble]', 'multiuse.php?pwd=' +
                     pwd + '&action=useitem&quantity=' + num + '&whichitem=24'));
-            } else AddLinks(descId, bText.parent().parent().get(0), p, thePath);
+            } else AddLinks(descId, bText.parent().parent().get(0), p, location.pathname);
         }
     }
 }
@@ -3790,7 +3780,7 @@ function at_barrel() {
         var onclick = this.getAttribute("onclick");
         if (onclick == undefined) return;
         if (onclick.indexOf("desc") != -1) {
-            AddLinks(onclick, this.parentNode.parentNode, null, thePath);
+            AddLinks(onclick, this.parentNode.parentNode, null, location.pathname);
         }
     });
 }
@@ -3906,7 +3896,7 @@ function at_council() {
     $('img').each(function () {
         var onclick = this.getAttribute('onclick');
         if (onclick != undefined && onclick.indexOf("desc") != -1)
-            AddLinks(onclick, this.parentNode.parentNode, null, thePath);
+            AddLinks(onclick, this.parentNode.parentNode, null, location.pathname);
     });
 }
 
@@ -4579,7 +4569,7 @@ function at_skills() {
                     else this.value = val;
                     event.stopPropagation();
                     event.preventDefault();
-                } else if (ENABLE_QS_REFRESH == 1 && event.which == 82) self.location.reload();	// 'r'
+                } else if (event.which == 82) self.location.reload();	// 'r'
             }, true);
 
             if (!miniSkills && temp.getAttribute('id') != 'skilltimes') {
@@ -4631,7 +4621,7 @@ function at_skills() {
                     this.value = val;
                     event.stopPropagation();
                     event.preventDefault();
-                } else if (ENABLE_QS_REFRESH == 1 && event.which == 82) self.location.reload();	// 82 = 'r'
+                } else if (event.which == 82) self.location.reload();	// 82 = 'r'
             }, false);
 
             if (!miniSkills) {
@@ -4889,7 +4879,7 @@ function at_palinshelves() {
         var img = document.images[i];
         var onclick = img.getAttribute("onclick");
         if (onclick != undefined && onclick.indexOf("desc") != -1)
-            AddLinks(onclick, img.parentNode.parentNode, null, thePath);
+            AddLinks(onclick, img.parentNode.parentNode, null, location.pathname);
     }
     var sels = document.getElementsByTagName('select');
     if (sels.length > 0) {
