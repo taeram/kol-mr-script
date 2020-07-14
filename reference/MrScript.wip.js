@@ -1,110 +1,24 @@
-// Mr. Script v1.81
-//
-// --------------------------------------------------------------------
-// This is a user script.  To install it, you need Greasemonkey 0.8 or
-// later. Get it at https://addons.mozilla.org/en-US/firefox/addon/748
-// To uninstall, go to Tools/Manage User Scripts, select "Mr. Script",
-// check "Also uninstall associated preferences" and click "Uninstall".
-// Released under the GPL license: http://www.gnu.org/copyleft/gpl.html
-// --------------------------------------------------------------------
-//
-// ==UserScript==
-// @name        Mr. Script
-// @namespace   http://www.noblesse-oblige.org/lukifer/scripts/
-// @description	interface overhauler for KingdomofLoathing.com
-// @version		1.81
-// @author		Lukifer
-// @contributor	Ohayou
-// @contributor Hellion
-// @contributor	Tard
-// @contributor JiK4eva
-// @contributor BeingEaten
-// @contributor Picklish
-// @contributor	CharonTheHand
-// @include     http://127.0.0.1:60*/*
-// @include		http://*localhost:*/*
-// @include     http://*kingdomofloathing.com/*
-// @exclude     http://images.kingdomofloathing.com/*
-// @exclude     http://forums.kingdomofloathing.com/*
-// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js
-// @grant	GM_log
-// @grant	GM_setValue
-// @grant	GM_getValue
-// @grant	GM_deleteValue
-// @grant	GM_xmlhttpRequest
-// @unwrap
-// ==/UserScript==
-
-
-var place = location.pathname.replace(/\/|\.(php|html)$/gi, "").toLowerCase();
-if(place === "place") {
-	var match = location.search.match(/whichplace=([0-9a-zA-Z_\-]*)/);
-	if(match.length > 1) place = match[1];
-}
-//console.time("Mr. Script @ " + place);
-//GM_log("at:" + place);
-
 // n.b. version number should always be a 3-digit number.  If you move to 1.9, call it 1.9.0.  Don't go to 1.8.10 or some such.
 var VERSION = 181;
 var MAXLIMIT = 999;
 var ENABLE_QS_REFRESH = 1;
 var DISABLE_ITEM_DB = 0;
-
 var thePath = location.pathname;
-
 var global = this; //, mr = unsafeWindow.top.mr = global;
-
 // server variable lets you be logged on to different servers with different characters and keep them straight.
 // not nearly so nifty now that there's only www and dev....
 var server = location.host + "/";
 var serverNo = (server.match(/(.)\./) || {1:"L"})[1]; 	// the "7" in www7.X, or an "L" if no . is in the hostname.
-
 var pwd = GM_getValue('hash.' + server.split('.')[0]);
-
 var prefAutoclear = GetPref('autoclear');
 var prefSpoilers = GetPref('zonespoil') == 1;
 
-//really cool hack to capture DomNodeInserts without having to use the deprecated DOMNodeInserted event,
-//which is apparently a huge performance drain:
-//after the document is loaded, slap an invisible animation onto any "interesting" new elements that arrive.
-//bind a handler to the animation-start event which then does whatever needs doing with the new elements.
-//in our case, the AJAX 'Results:' boxes are always starting with <center><center> and are in a div named effdiv.
-
-addCss('@-moz-keyframes nodeInserted { from { clip: rect(1px,auto,auto,auto) } to { clip: rect(0px,auto,auto,auto) } }');
-
-//specify what an "interesting" element is... any "Results:" block has this form.
-
-addCss('center > center > table > tbody > tr > td > b { animation-duration: 0.001s; animation-name: nodeInserted }');
-//this gets us right down to a <b>Results:</b> header, I hope.
-
 $(document).on('animationstart',ResultHandler);
-
 anywhere(); // stuff we always add where we can
 
 // town_right to cover gourds, and forestvillage for untinkered results...
 if (/^(adventure|choice|craft|knoll|knoll_friendly|shore|town_right|forestvillage|place|multiuse)$/.test(place)) {
 	dropped_item();
-}
-// where are we and what do we thus want to do?
-var handler;
-if ((handler = global["at_" + place])) {
-	handler();
-}
-if ((handler = prefSpoilers && global["spoil_" + place])) {
-	handler();
-}
-
-global = null;
-handler = null;
-
-// no imperative top-level code below here; the rest is function definitions:
-
-jQuery.prototype.toString = function() {
-  return "[jQuery:" + this.length + "]";
-};
-
-String.prototype.trim = function () {
-    return this.replace(/^\s*/, "").replace(/\s*$/, "");
 }
 
 // ANYWHERE: stuff that we want to do on every possible occasion.
@@ -124,15 +38,6 @@ function dropped_item() {
 			AddLinks(onclick, this.parentNode.parentNode, null, thePath);
 		}
 	});
-}
-
-function addCss(cssString) {
-	var head = document.getElementsByTagName('head')[0];
-	if (head === undefined) return;
-	var newCss = document.createElement('style');
-	newCss.type = "text/css";
-	newCss.innerHTML = cssString;
-	head.appendChild(newCss);
 }
 
 function ResultHandler(e) {
@@ -259,15 +164,6 @@ function process_outfit(outfitname, jnode) {
 	}
 }
 
-// Don't ask why this guy bothered to write wrapper functions. He just did. :-)
-function persist(key, value) {
-	try {
-		GM_setValue(key, value);
-	} catch(e) {
-		console.error('Error while setting ' + key + ' to ' + value + ': ' + e.message);
-	}
-}
-
 function integer(n) {
 	if (typeof n == 'string') n.replace(/^\D+|,/g, "");
 	return parseInt(n, 10);
@@ -334,7 +230,7 @@ function parseItem(tbl) {
 
 // Set/GetPref: store/retrieve data that applies to the script as a whole.
 function SetPref(which, value) {
-	persist("pref." + which, value);
+	GM_setValue("pref." + which, value);
 }
 
 function GetPref(which) {
@@ -343,7 +239,7 @@ function GetPref(which) {
 
 // Set/GetData: store/retrieve data related to a particular session
 function SetData(which, value) {
-	persist(serverNo + which, value);
+	GM_setValue(serverNo + which, value);
 }
 
 function GetData(which) {
@@ -353,7 +249,7 @@ function GetData(which) {
 // Set/GetCharData: store/retrieve data related to a particular account/ascension
 function SetCharData(which, value) {
 	var charname = GetData("charname");
-	persist(charname + which, value);
+	GM_setValue(charname + which, value);
 }
 function GetCharData(which) {
 	var charname = GetData("charname");
@@ -366,7 +262,7 @@ function DelCharData(which) {
 
 // Password hash functions.  whee.
 function SetPwd(hash) {
-	persist('hash.' + server.split('.')[0], hash);
+	GM_setValue('hash.' + server.split('.')[0], hash);
 }
 function FindHash() {
 	GM_get(server + 'api.php?what=status&for=MrScript', function(html) {
@@ -1561,72 +1457,6 @@ function InlineItemDescriptions() {
 	}, true);
 }
 
-
-// MAIN.HTML: Resize top pane a bit and store password hash.
-// was main_c
-function at_main() {
-	FindHash();
-	setTimeout("if (top.frames[0].location == 'about:blank')" +
-		 " top.frames[0].location = 'topmenu.php'", 1500);	// fix for top menu not always loading properly
-
-	// n.b. the :eq(1) below is important because of the nested-table layout.  only select the inner TR.
-	$('tr:contains("Noob."):eq(1)').append(AppendLink('[Toot]','tutorial.php?action=toot'));	// fresh from valhalla?  get things rolling.
-	$('tr:contains("responded to a trade offer"):eq(1)').append(AppendLink('[trade]', 'makeoffer.php'));
-	$('tr:contains("new announcement"):eq(1)').append(AppendLink('[go read it]', 'clan_hall.php'));
-
-	var update = GetData("Update");
-	if (update != '') {
-		$('table:first').before(update);
-		SetData("Update",'');
-	}
-// may also want to add a check for Funkslinging here.
-}
-
-// GAME: look for updates and post link if needed.
-// n.b. game.php is the outermost, non-frame window that contains all the frames.
-// 	as such, the script only sees it exactly once, when you're logging in.
-function at_game() {
-	var lastUpdated = integer(GM_getValue('MrScriptLastUpdate', 0));
-	var currentHours = integer(new Date().getTime()/3600000);
-
-	// reload topmenu exactly once after charpane has finished processing:
-	setTimeout('top.frames[0].location.reload();',2000);
-
-	// If over X hours, check for updates
-	if ((currentHours - lastUpdated) > 6)
-	{
-	GM_get("noblesse-oblige.org/hellion/scripts/MrScript.version.json",
-		function(txt)
-		{	txt = txt.replace(/\n/,'');		// strip carriage returns so that eval() doesn't blow up
-			var json = $.parseJSON(txt);
-			if (!json.version) return;
-			var vnum = json.version.replace(/\./g, "");	// strip points: 1.4.3 => 143.
-			if (!vnum) return;
-			if (integer(vnum) <= VERSION)		// number returned via lookup is not newer than what this script says it is...
-			{	persist('MrScriptLastUpdate',
-					integer(new Date().getTime()/3600000)); return;
-			}
-			// If we're still here, then we need an update link.
-			var html =
-				'<div style="font-size:14px;text-decoration:none;text-align:center;">' +
-				'Mr. Script v' + json.version + ' is available!<br /><br />' +
-				'<a href="' + json.url1 + '" target="_blank">';
-			if (json.url2 && json.url2.length > 0) {
-				html +=
-				'Uncompressed</a>&nbsp;&nbsp;&nbsp;&nbsp;<b>OR</b>' +
-				'&nbsp;&nbsp;&nbsp;&nbsp;<a href="' + json.url2 +
-				'" target="_blank">Minified</a>&nbsp;&nbsp;<span style="font-size:10px;"></span><br />';
-			} else {
-				html += 'Update</a><br />';
-			}
-			html += (json.desc ?
-			'<p style="margin:0 auto; text-align:left; font-size:10px;">'+
-			json.desc+'</p>' : '<br />') + '</div>';
-			SetData("Update",html);
-		});
-	}
-}
-
 function at_bedazzle() {
 	dropped_item();
 }
@@ -2688,10 +2518,6 @@ function at_bounty() {
 	});
 */
 
-}
-
-function at_mall() {
-	$('center table tr td center table:first').prepend('<tr><td><center><a href=managestore.php>Manage your Store</a><br /><br /></center></td></tr>');
 }
 
 function at_managestore() {
@@ -3829,7 +3655,7 @@ function at_charpane() {
 		SetCharData("currentMP", curMP); SetCharData("maxMP", maxMP);
 	} else { // Full Mode
 		function parse_cur_and_max(names, data) {
-			for (var name in names) {
+			for each (var name in names) {
 				var cur_max = data.shift().split('/').map(integer);
         		SetCharData("current"+ name, cur_max[0]);
 				SetCharData("max"    + name, cur_max[1]);
@@ -6374,7 +6200,7 @@ function buildPrefs() {
 				var versionNumber = txtsplit[0].replace('.','').replace('.','');
 				if (integer(versionNumber) <= VERSION) {
 					uspan.innerHTML = "<br>No Update Available.";
-					persist('MrScriptLastUpdate', integer(new Date().getTime()/3600000)); return;
+					GM_setValue('MrScriptLastUpdate', integer(new Date().getTime()/3600000)); return;
 				} else {
 					uspan.innerHTML = "<br>Version " + txtsplit[0] + " Available: <a target='_blank' href='" +
 						txtsplit[1] + "'>Update</a>";

@@ -46,7 +46,10 @@ const config: webpack.Configuration = {
       entryOnly: true,
       raw: true
     })
-  ]
+  ],
+  externals: {
+    "jquery": "jQuery"
+  }
 };
 
 export default config;

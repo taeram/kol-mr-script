@@ -10,13 +10,15 @@
         "./src/*"
       ]
     },
-    "strict": true,
-    "esModuleInterop": true,
     "lib": [
       "dom",
       "dom.iterable",
       "es2018"
     ],
-    "removeComments": true
+    "declaration": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "removeComments": true,
+    "strict": true
   }
 }
