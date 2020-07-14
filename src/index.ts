@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name            Mr. Script
+// @name            Mr. Script Redux
 // @namespace       https://github.com/taeram/kol-mr-script
 // @description     Kingdom of Loathing Helper
 // @version         1.82
@@ -16,25 +16,32 @@
 // @require         https://ajax.googleapis.com/ajax/libs/jquery/3.5.0/jquery.min.js
 // @updateURL       https://raw.github.com/taeram/user-scripts/master/a-dark-room.user.js
 // @downloadURL     https://raw.github.com/taeram/user-scripts/master/a-dark-room.user.js
+// @grant           GM_addStyle
+// @grant           GM_deleteValue
+// @grant           GM_getValue
 // @grant           GM_log
 // @grant           GM_setValue
-// @grant           GM_getValue
-// @grant           GM_deleteValue
 // @grant           GM_xmlhttpRequest
 // @unwrap
 // ==/UserScript==
 
-import {Place_Main} from "./places/main";
-import {Place_Mall} from "./places/mall";
+import {Place_Maint} from "./places/Maintenance";
+import {Place_Main} from "./places/Main";
+import {Place_ReportBug} from "./places/ReportBug"
 
+// What page are we on?
+let placeId = location.pathname.replace(/\/|\.(php|html)$/gi, "").toLowerCase();
 let match = location.search.match(/whichplace=([0-9a-zA-Z_\-]*)/);
 if (match && match.length > 1) {
-    let placeId = match[1];
-    if (placeId === 'main') {
-        Place_Main.at();
-    } else if (placeId === 'mall') {
-        Place_Mall.at();
-    }
+    placeId = match[1];
+}
+
+if (placeId === 'adminmail') {
+    Place_ReportBug.at();
+} else if (placeId === 'maint') {
+    Place_Maint.at();
+} else if (placeId === 'main') {
+    Place_Main.at();
 }
 
 // Capture DomNodeInserts without having to use the deprecated DOMNodeInserted
@@ -47,13 +54,12 @@ if (match && match.length > 1) {
 //    <center><center> and are in a div named effdiv.
 GM_addStyle('@-moz-keyframes nodeInserted { ' +
     'from { clip: rect(1px,auto,auto,auto) } to { clip: rect(0px,auto,auto,auto) } ' +
-'}');
+    '}');
 
 // Specify what an "interesting" element is... any "Results:" block has this form.
 GM_addStyle('center > center > table > tbody > tr > td > b { ' +
     'animation-duration: 0.001s;' +
     'animation-name: nodeInserted;' +
-'}');
+    '}');
 
 // $(document).on('animationstart', ResultHandler);
-// anywhere();

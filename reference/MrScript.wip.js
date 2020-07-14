@@ -1,17 +1,12 @@
 // n.b. version number should always be a 3-digit number.  If you move to 1.9, call it 1.9.0.  Don't go to 1.8.10 or some such.
-var VERSION = 181;
-var MAXLIMIT = 999;
-var ENABLE_QS_REFRESH = 1;
-var DISABLE_ITEM_DB = 0;
+
 var thePath = location.pathname;
 var global = this; //, mr = unsafeWindow.top.mr = global;
 // server variable lets you be logged on to different servers with different characters and keep them straight.
 // not nearly so nifty now that there's only www and dev....
 var server = location.host + "/";
-var serverNo = (server.match(/(.)\./) || {1:"L"})[1]; 	// the "7" in www7.X, or an "L" if no . is in the hostname.
 var pwd = GM_getValue('hash.' + server.split('.')[0]);
 var prefAutoclear = GetPref('autoclear');
-var prefSpoilers = GetPref('zonespoil') == 1;
 
 $(document).on('animationstart',ResultHandler);
 anywhere(); // stuff we always add where we can
@@ -239,11 +234,11 @@ function GetPref(which) {
 
 // Set/GetData: store/retrieve data related to a particular session
 function SetData(which, value) {
-	GM_setValue(serverNo + which, value);
+	GM_setValue(which, value);
 }
 
 function GetData(which) {
-	return GM_getValue(serverNo + which);
+	return GM_getValue(which);
 }
 
 // Set/GetCharData: store/retrieve data related to a particular account/ascension
@@ -363,7 +358,7 @@ function FindMaxQuantity(item, howMany, deefault, safeLevel) {
 
 		default:
 			if (deefault == 1)
-			{	if (howMany > MAXLIMIT) return MAXLIMIT;
+			{	if (howMany > 999) return 999;
 				else return howMany;
 			} else return 0;
 	}
@@ -3933,7 +3928,7 @@ function at_skills() {
 					if (val > limit) this.value = limit;
 					else this.value = val;
 					event.stopPropagation(); event.preventDefault();
-				} else if (ENABLE_QS_REFRESH == 1 && event.which == 82) self.location.reload();	// 'r'
+				} else if (event.which == 82) self.location.reload();	// 'r'
 			}, true);
 
 			if (!miniSkills && temp.getAttribute('id') != 'skilltimes') {
@@ -3984,7 +3979,7 @@ function at_skills() {
 					this.value = val;
 					event.stopPropagation(); event.preventDefault();
 				}
-				else if (ENABLE_QS_REFRESH == 1 && event.which == 82) self.location.reload();	// 82 = 'r'
+				else if (event.which == 82) self.location.reload();	// 82 = 'r'
 			}, false);
 
 			if (!miniSkills) {
@@ -6190,24 +6185,6 @@ function buildPrefs() {
 
 	function createBottomBar(centeredlinks) {
 		var ulspan = document.createElement('div');
-		var ul = document.createElement('a');
-		ul.setAttribute('href','#');
-		ul.innerHTML = "Check For Update";
-		ul.addEventListener('click',function(event) {
-			GM_get("noblesse-oblige.org/hellion/scripts/MrScript.version.txt", function(txt) {
-				var uspan = document.getElementsByName('updatespan')[0];
-				var txtsplit = txt.split(',');
-				var versionNumber = txtsplit[0].replace('.','').replace('.','');
-				if (integer(versionNumber) <= VERSION) {
-					uspan.innerHTML = "<br>No Update Available.";
-					GM_setValue('MrScriptLastUpdate', integer(new Date().getTime()/3600000)); return;
-				} else {
-					uspan.innerHTML = "<br>Version " + txtsplit[0] + " Available: <a target='_blank' href='" +
-						txtsplit[1] + "'>Update</a>";
-				}
-			}); event.stopPropagation(); event.preventDefault();
-		}, true);
-
 		var ul4 = document.createElement('a');
 		ul4.setAttribute('href','javascript:void(0);');
 		ul4.innerHTML = "Renew Password Hash";
@@ -6341,24 +6318,3 @@ function autoclear_added_rows() {
 		});
 	});
 }
-
-function at_adminmail() {
-	function showBRform() {
-		$('table:first').attr('style','display:inline');
-	}
-
-	var msg = 	"<div><center><font size=4 color='blue'><p>You currently have Greasemonkey enabled and at least 1 script active.</p>" +
-				"<p>Before reporting a bug, please make sure that you can reproduce " +
-				"the issue with Greasemonkey disabled.</p></font><center><a id='H_MRS_BR1' href=#'>[click to continue]</a><br /></center></div>";
-	$('body').prepend(msg);
-	$('table:first').attr('style','display:none');
-	$('#H_MRS_BR1').click(showBRform);
-}
-
-// MAINT: Refresh until rollover is over.
-function at_maint() {
-	document.title="KoL Rollover";
-	window.setTimeout('self.location = "http://www.kingdomofloathing.com";',60000);
-}
-
-//console.timeEnd("Mr. Script @ " + place);
