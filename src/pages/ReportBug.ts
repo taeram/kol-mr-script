@@ -1,5 +1,5 @@
-export class Place_ReportBug {
-    static at() {
+export class Page_ReportBug {
+    static init() {
         $('body').prepend(
             "<div><center>" +
             "<font size=4 color='blue'>" +

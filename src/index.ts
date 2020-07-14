@@ -25,23 +25,30 @@
 // @unwrap
 // ==/UserScript==
 
-import {Place_Maint} from "./places/Maintenance";
+import {Character} from "./Character";
+import {Page_Maint} from "./pages/Maintenance";
+import {Page_ReportBug} from "./pages/ReportBug"
 import {Place_Main} from "./places/Main";
-import {Place_ReportBug} from "./places/ReportBug"
+import {Place_SeasideTown} from "./places/Main/SeasideTown";
 
 // What page are we on?
-let placeId = location.pathname.replace(/\/|\.(php|html)$/gi, "").toLowerCase();
-let match = location.search.match(/whichplace=([0-9a-zA-Z_\-]*)/);
-if (match && match.length > 1) {
-    placeId = match[1];
+let locationId = location.pathname.replace(/\/|\.(php|html)$/gi, "").toLowerCase();
+if (locationId === "place") {
+    let match = location.search.match(/whichplace=([0-9a-zA-Z_\-]*)/);
+    if (match && match.length > 1) {
+        locationId = match[1];
+    }
 }
 
-if (placeId === 'adminmail') {
-    Place_ReportBug.at();
-} else if (placeId === 'maint') {
-    Place_Maint.at();
-} else if (placeId === 'main') {
-    Place_Main.at();
+if (locationId === 'adminmail') {
+    Page_ReportBug.init();
+} else if (locationId === 'maint') {
+    Page_Maint.init();
+} else if (locationId === 'main') {
+    Character.init();
+    Place_Main.init();
+} else if (locationId === 'town_wrong') {
+    Place_SeasideTown.wrongSideOfTheTracks()
 }
 
 // Capture DomNodeInserts without having to use the deprecated DOMNodeInserted

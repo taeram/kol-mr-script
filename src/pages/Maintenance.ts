@@ -1,5 +1,5 @@
-export class Place_Maint {
-    static at() {
+export class Page_Maint {
+    static init() {
         window.setTimeout(function () {
             window.location.reload();
         }, 60000);
