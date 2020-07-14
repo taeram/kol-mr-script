@@ -30,7 +30,7 @@ const config: webpack.Configuration = {
     }]
   },
   output: {
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname),
     filename: "MrScript.user.js"
   },
   resolve: {

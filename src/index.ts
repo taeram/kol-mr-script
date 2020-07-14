@@ -14,8 +14,8 @@
 // @contributor     Taeram
 // @include         https://*kingdomofloathing.com/*
 // @require         https://ajax.googleapis.com/ajax/libs/jquery/3.5.0/jquery.min.js
-// @updateURL       https://raw.github.com/taeram/user-scripts/master/a-dark-room.user.js
-// @downloadURL     https://raw.github.com/taeram/user-scripts/master/a-dark-room.user.js
+// @updateURL       https://raw.githubusercontent.com/taeram/kol-mr-script/master/MrScript.user.js
+// @downloadURL     https://raw.githubusercontent.com/taeram/kol-mr-script/master/MrScript.user.js
 // @grant           GM_addStyle
 // @grant           GM_deleteValue
 // @grant           GM_getValue
