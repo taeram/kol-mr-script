@@ -32,7 +32,6 @@ if (place === "place") {
 //GM_log("at:" + place);
 
 // n.b. version number should always be a 3-digit number.  If you move to 1.9, call it 1.9.0.  Don't go to 1.8.10 or some such.
-var VERSION = 181;
 var MAXLIMIT = 999;
 var ENABLE_QS_REFRESH = 1;
 var DISABLE_ITEM_DB = 0;
@@ -2046,46 +2045,8 @@ function at_main() {
 // n.b. game.php is the outermost, non-frame window that contains all the frames.
 // 	as such, the script only sees it exactly once, when you're logging in.
 function at_game() {
-    var lastUpdated = integer(GM_getValue('MrScriptLastUpdate', 0));
-    var currentHours = integer(new Date().getTime() / 3600000);
-
     // reload topmenu exactly once after charpane has finished processing:
     setTimeout('top.frames[0].location.reload();', 2000);
-
-    // If over X hours, check for updates
-    if ((currentHours - lastUpdated) > 6) {
-        GM_get("noblesse-oblige.org/hellion/scripts/MrScript.version.json",
-            function (txt) {
-                txt = txt.replace(/\n/, '');		// strip carriage returns so that eval() doesn't blow up
-                var json = $.parseJSON(txt);
-                if (!json.version) return;
-                var vnum = json.version.replace(/\./g, "");	// strip points: 1.4.3 => 143.
-                if (!vnum) return;
-                if (integer(vnum) <= VERSION)		// number returned via lookup is not newer than what this script says it is...
-                {
-                    persist('MrScriptLastUpdate',
-                        integer(new Date().getTime() / 3600000));
-                    return;
-                }
-                // If we're still here, then we need an update link.
-                var html =
-                    '<div style="font-size:14px;text-decoration:none;text-align:center;">' +
-                    'Mr. Script v' + json.version + ' is available!<br /><br />' +
-                    '<a href="' + json.url1 + '" target="_blank">';
-                if (json.url2 && json.url2.length > 0) {
-                    html +=
-                        'Uncompressed</a>&nbsp;&nbsp;&nbsp;&nbsp;<b>OR</b>' +
-                        '&nbsp;&nbsp;&nbsp;&nbsp;<a href="' + json.url2 +
-                        '" target="_blank">Minified</a>&nbsp;&nbsp;<span style="font-size:10px;"></span><br />';
-                } else {
-                    html += 'Update</a><br />';
-                }
-                html += (json.desc ?
-                    '<p style="margin:0 auto; text-align:left; font-size:10px;">' +
-                    json.desc + '</p>' : '<br />') + '</div>';
-                SetData("Update", html);
-            });
-    }
 }
 
 function at_bedazzle() {
@@ -7019,27 +6980,6 @@ function buildPrefs() {
 
     function createBottomBar(centeredlinks) {
         var ulspan = document.createElement('div');
-        var ul = document.createElement('a');
-        ul.setAttribute('href', '#');
-        ul.innerHTML = "Check For Update";
-        ul.addEventListener('click', function (event) {
-            GM_get("noblesse-oblige.org/hellion/scripts/MrScript.version.txt", function (txt) {
-                var uspan = document.getElementsByName('updatespan')[0];
-                var txtsplit = txt.split(',');
-                var versionNumber = txtsplit[0].replace('.', '').replace('.', '');
-                if (integer(versionNumber) <= VERSION) {
-                    uspan.innerHTML = "<br>No Update Available.";
-                    persist('MrScriptLastUpdate', integer(new Date().getTime() / 3600000));
-                    return;
-                } else {
-                    uspan.innerHTML = "<br>Version " + txtsplit[0] + " Available: <a target='_blank' href='" +
-                        txtsplit[1] + "'>Update</a>";
-                }
-            });
-            event.stopPropagation();
-            event.preventDefault();
-        }, true);
-
         var ul4 = document.createElement('a');
         ul4.setAttribute('href', 'javascript:void(0);');
         ul4.innerHTML = "Renew Password Hash";
