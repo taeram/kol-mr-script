@@ -662,8 +662,9 @@ function AddLinks(descId, theItem, formWhere, path) {
             addWhere.append(Util.createLink('[equip as acc2]', equip({i:2267,s:2})));
             break;
 
-//        case 2052:                                                                 // Blackbird
-//            addWhere.append(Util.createLink('[use map]',Util.getInvUseUrl2054))); break;
+//        case 2052:
+//      // Blackbird addWhere.append(Util.createLink('[use
+// map]',Util.getInvUseUrl((2054))); break;
 
         case 2050: case 2051:                                                    // bird parts
             addWhere.append(Util.createLink('[bird]', 'craft.php?mode=combine' +
@@ -680,8 +681,11 @@ function AddLinks(descId, theItem, formWhere, path) {
         case 1549:                                                                 // MSG
             addWhere.append(Util.createLink('[bam!]', 'guild.php?place=wok')); break;
 
-        case 2441:                                                                 // KG encryption key
-            addWhere.append(Util.createLink('[use map]',Util.getInvUseUrl2442))); break;
+        case 2441:                                                                 // KG
+                                                                           // encryption
+                                                                           // key
+            addWhere.append(Util.createLink('[use map]', Util.getInvUseUrl((2442)));
+            break;
 
         case 2277:                                                                 // Fernswarthy's key
             if (place == 'adventure') addWhere.append(Util.createLink('[visit guild]','guild.php?place=ocg'));
@@ -703,10 +707,10 @@ function AddLinks(descId, theItem, formWhere, path) {
         case   23:                                                                 // gum
             if (weCameFrom('hermit') && path == "/store.php") {    // came to the store from the hermit?  use it automatically.
                 if (itemQty > 3) itemQty = 3;
-                let dourl = Util.getInvUseUrl23)+"&itemquantity="+itemQty+"&quantity="+itemQty+"&ajax=1";
+                let dourl = Util.getInvUseUrl(23) + "&itemquantity=" + itemQty + "&quantity=" + itemQty + "&ajax=1";
                 ajaxit(dourl);
             } else     {
-                addWhere.append(Util.createLink('[use]', Util.getInvUseUrl23)+"&itemquantity="+itemQty+"&quantity="+itemQty));
+                addWhere.append(Util.createLink('[use]', Util.getInvUseUrl(23) + "&itemquantity=" + itemQty + "&quantity=" + itemQty));
             }
             break;
 
@@ -735,7 +739,7 @@ function AddLinks(descId, theItem, formWhere, path) {
 
         case  236:                                                                 // cocktailcrafting kit
             if (weCameFrom('craft') && path == "/store.php") {        // bought via Mr. Script button? auto-use.
-                mainpane_goto(Util.getInvUseUrl236) + '&bounce=craft.php?a=1');
+                mainpane_goto(Util.getInvUseUrl(236) + '&bounce=craft.php?a=1');
             } else {
                 doWhat = 'oneuse';
             }
@@ -743,7 +747,7 @@ function AddLinks(descId, theItem, formWhere, path) {
 
         case  157:                                                                 // E-Z cook oven
             if (weCameFrom('craft') && path == "/store.php") {        // bought via Mr. Script button?  auto-use.
-                mainpane_goto(Util.getInvUseUrl157) + '&bounce=craft.php?a=1');
+                mainpane_goto(Util.getInvUseUrl(157) + '&bounce=craft.php?a=1');
             } else {
                 doWhat = 'oneuse';
             }
@@ -758,7 +762,7 @@ function AddLinks(descId, theItem, formWhere, path) {
             break;
 
         case  140:                                                                 // dingy Planks
-            addWhere.append(Util.createLink('[boat]', Util.getInvUseUrl146)));
+            addWhere.append(Util.createLink('[boat]', Util.getInvUseUrl(146)));
             break;
 
         case   47:                                                                 // Roll
@@ -828,8 +832,12 @@ function AddLinks(descId, theItem, formWhere, path) {
             addWhere.append(Util.createLink('[mothership!]',Util.getPlaceUrl('bugbearship&action=bb_bridge'))); break;
         case 5782:  case 5783:  case 5784:  case 5785:  case 5786:  case 5787:  // smut orc building materials
             addWhere.append(Util.createLink('[build!]',Util.getPlaceUrl('orc_chasm&action=bridge'))); break;
-        case 6693:  case 6694:                                                  // McClusky file, page 5, binder clip
-            addWhere.append(Util.createLink('[bind!]',Util.getInvUseUrl6694))); break;
+        case 6693:
+        case 6694:                                                  // McClusky file,
+                                                            // page 5, binder
+                                                            // clip
+            addWhere.append(Util.createLink('[bind!]', Util.getInvUseUrl(6694)));
+            break;
         case 7179:  case 7182:  case 7184:                                      // First Pizza, Stankara Stone, Shield of Brook
         case 7181:     case 7183:     case 7180:
             addWhere.append(Util.createLink('[Copperhead Club (1)]',Util.getSnarfblatUrl(383))); break;
@@ -871,7 +879,7 @@ function AddLinks(descId, theItem, formWhere, path) {
             break;
 
         case "oneuse":
-            addWhere.append(Util.createLink('[use]',Util.getInvUseUrlitemNum)));
+            addWhere.append(Util.createLink('[use]', Util.getInvUseUrl(itemNum)));
             break;
 
         case "use":
@@ -2076,7 +2084,7 @@ function at_choice() {
         let p0 = p.get(0); //p[0];
         let p0text = p0.textContent;
         if (p0text.indexOf("actually a book.") != -1) {    // The Oracle
-            p0.appendChild(Util.createLink('[go ahead, read it already]',Util.getInvUseUrl818)));
+            p0.appendChild(Util.createLink('[go ahead, read it already]', Util.getInvUseUrl(818)));
         } else if (p0text.indexOf("a new pledge") != -1) {    // Orcish Frat House Blueprints adventure
             $('a [href="adventure.php?snarfblat=27"]')
                 .attr('href',Util.getSnarfblatUrl(157))
@@ -2144,7 +2152,7 @@ function at_choice() {
                 .replaceWith('<a href="adventure.php?snarfblat=320">Adventure in '+nextZoneName+'</a>');
         } else if (p0text.indexOf("Then good luck to you on your travels") != -1) {
             //probably got something from Gnasir!
-            p0.appendChild(Util.createLink('[use pamphlet]',Util.getInvUseUrl6854)));
+            p0.appendChild(Util.createLink('[use pamphlet]', Util.getInvUseUrl(6854)));
         } else if (p0text.indexOf("In the resultant silence") != -1) {
             p0.appendChild(Util.createLink('[to the basement]',Util.getPlaceUrl('manor4')));
         } else {
@@ -2351,7 +2359,7 @@ function at_inventory() {
         let fimg = $('img:first');
         let src = fimg.attr('src');
         if (src.indexOf('blackbird1') != -1) {                                    // blackbird
-            fimg.append(Util.createLink('[use map]',Util.getInvUseUrl2054)));
+            fimg.append(Util.createLink('[use map]', Util.getInvUseUrl(2054)));
         }
         else if (src.indexOf('scroll1.gif') != -1) {                            // 31337 scroll
             let clov = $('b:lt(5):contains(clover)');
@@ -2555,15 +2563,26 @@ function at_palindome() {
 }
 
 function weCameFrom(somepage) {
-    if (document.referrer.indexOf(somepage) != -1) return true;
-    else if (somepage == "") return true;
-    else return false;
+    if (document.referrer.indexOf(somepage) != -1) {
+        return true;
+    }
+    else if (somepage == "") {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 //helper function for kolproxy
-function at_Util.getInvUseUrl) {
+function at_Util
+
+.
+getInvUseUrl()
+{
     at_inventory();
 }
+
 function at_inv_equip() {
     at_inventory();
 }
@@ -2872,7 +2891,7 @@ function at_hermit() {
                 case 0: //do nothing
                     break;
                 case 1:
-                    p.append('<br><center><a href="'+Util.getInvUseUrl23)+'">Use a chewing gum</a></center>');
+                    p.append('<br><center><a href="' + Util.getInvUseUrl(23) + '">Use a chewing gum</a></center>');
                     break;
                 case 2:
                     p.append('<br><center><a href="multiuse.php?whichitem=23&quantity=2&action=useitem&pwd='
@@ -2985,12 +3004,11 @@ function at_council() {
                             }
                         );
                 }
-                p.append(Util.createLink('[perfume]', Util.getInvUseUrl307)));
+                p.append(Util.createLink('[perfume]', Util.getInvUseUrl(307)));
                 p.append(Util.createLink('[knob]', 'cobbsknob.php'));
             }
-            else if (txt.indexOf("the Outskirts") != -1)
-                p.append(Util.createLink('[use map+key]',Util.getInvUseUrl2442)));
-            else if (txt.indexOf("Sinister") != -1)
+            else if (txt.indexOf("the Outskirts") != -1){p.append(Util.createLink('[use map+key]', Util.getInvUseUrl(2442)));
+            }else if (txt.indexOf("Sinister") != -1)
                 p.append(Util.createLink('[cave]', 'cave.php'));
             else if ((txt.indexOf("Deep Fat") != -1) || (txt.indexOf("Friars") != -1))
                 p.append(Util.createLink('[copse]', 'friars.php'));
@@ -3042,9 +3060,8 @@ function at_council() {
             let txt = b.text();
             if (txt.indexOf("leaflet") != -1)
                 b.append(Util.createLink('[read]', 'leaflet.php'));
-            else if (txt.indexOf("Knob map") != -1)
-                b.append(Util.createLink('[use map+key]',Util.getInvUseUrl2442)));
-            else if ((txt.indexOf("dragonbone") != -1) || (txt.indexOf("batskin") != -1)) {
+            else if (txt.indexOf("Knob map") != -1){b.append(Util.createLink('[use map+key]', Util.getInvUseUrl(2442)));
+            }else if ((txt.indexOf("dragonbone") != -1) || (txt.indexOf("batskin") != -1)) {
                 b.append(Util.createLink('[make belt]', 'craft.php?mode=combine&action=craft&a=676&b=192&pwd=' +
                     pwd + '&quantity=1'));
             }
@@ -3087,7 +3104,7 @@ function at_questlog() {
                             //event.stopPropagation(); event.preventDefault();
                         });
                     }
-                    b.append(Util.createLink('[perfume]', Util.getInvUseUrl307)));
+                    b.append(Util.createLink('[perfume]', Util.getInvUseUrl(307)));
                     b.append(Util.createLink('[knob]', 'cobbsknob.php'));
                     break;
                 case "Trial By Friar":
@@ -3522,7 +3539,7 @@ function at_charpane() {
                     let antianti = invcache[829];
                     if (antianti === undefined) antianti = 0;
                     if (antianti > 0) {
-                        GM_get( Util.getInvUseUrl829),function(event)    // yes: use it.
+                        GM_get(Util.getInvUseUrl(829), function (event)    // yes: use it.
                         {
                             top.frames[1].location.reload();
                         });
@@ -3530,9 +3547,10 @@ function at_charpane() {
                         GM_get('galaktik.php?howmany=1&action=buyitem&whichitem=829&pwd='+pwd,
                         function(result)
                         {
-                            if (result.indexOf('acquire') != -1)                                    // buy success: use it.
-                                GM_get( Util.getInvUseUrl829),function(event)
-                                {    top.frames[1].location.reload(); });
+                            if (result.indexOf('acquire') != -1)                                    // buy success: use it. {GM_get(Util.getInvUseUrl(829), function (event) {
+                                top.frames[1].location.reload();
+                            });
+                            }
                         });
                     }
                 }); event.stopPropagation(); event.preventDefault();
@@ -3566,7 +3584,7 @@ function at_charpane() {
 
                 case 221: // chalk: right-click to use more
                     let func = "top.mainpane.location.href = 'http://";
-                    func += server + Util.getInvUseUrl1794) + '; return false; ';
+                    func += server + Util.getInvUseUrl(1794) + '; return false; ';
                     if (img.getAttribute('oncontextmenu') == null) img.setAttribute('oncontextmenu', func);
                     break;
                 case 285:   // link filthworm stenches to hippy garden container
@@ -4088,7 +4106,7 @@ function at_pandamonium() {
 function at_pyramid() {
     let ratch = document.createElement('a');
     ratch.innerHTML = '<font size="2">[use a ratchet]</font>';
-    ratch.setAttribute('href',Util.getInvUseUrl2540));
+    ratch.setAttribute('href', Util.getInvUseUrl(2540));
     let checkInv = document.createElement('a');
     checkInv.innerHTML = '<font size="2">[check inventory]</font>';
     checkInv.setAttribute('href', '#');
@@ -4108,7 +4126,7 @@ function at_pyramid() {
             else if (bomb > 0) html += "an ancient bomb";
             if (ratchet > 0) {
                 if (html != "You have ") html += " and ";
-                html += ratchet + " <a href='" + Util.getInvUseUrl2540);
+                html += ratchet + " <a href='" + Util.getInvUseUrl(2540);
                 html += "'>tomb ratchet"; if (ratchet > 1) html += "s";
                 html += "</a>";
             }
@@ -4192,33 +4210,73 @@ function at_lair1() {
         return;
     }
     if (document.location.search == "?action=gates") {
-        for (var i=0; i<3; i++)
-        {    let p = document.getElementsByTagName('p')[i];
+        for (var i=0; i<3; i++) {
+            let p = document.getElementsByTagName('p')[i];
             let ptxt = p.textContent;
-    // gate 1:
-            if (ptxt.indexOf("Suc Rose") != -1) p.appendChild(Util.createLink('[sugar rush]',Util.getInvUseUrl540)));
-            else if (ptxt.indexOf("Hilarity") != -1) p.appendChild(Util.createLink('[gremlin juice]',Util.getInvUseUrl2631)));
-            else if (ptxt.indexOf("Humility") != -1) p.appendChild(Util.createLink('[wussiness]',Util.getInvUseUrl469)));
-            else if (ptxt.indexOf("Morose Morbidity") != -1) p.appendChild(Util.createLink('[thin black candle]',Util.getInvUseUrl620)));
-            else if (ptxt.indexOf("Slack") != -1) p.appendChild(Util.createLink('[mick\'s IVH rub]',Util.getInvUseUrl618)));
-            else if (ptxt.indexOf("Spirit") != -1) p.appendChild(Util.createLink('[pygmy pygment]',Util.getInvUseUrl2242)));
-            else if (ptxt.indexOf("Porcupine") != -1) p.appendChild(Util.createLink('[super-spiky hair gel]',Util.getInvUseUrl587)));
-            else if (ptxt.indexOf("Viper") != -1) p.appendChild(Util.createLink('[adder bladder]',Util.getInvUseUrl2056)));
-            else if (ptxt.indexOf("Locked Gate") != -1) p.appendChild(Util.createLink('[Black No. 2]',Util.getInvUseUrl2059)));
-    // gate 2:
-            else if (ptxt.indexOf("Machismo") != -1) p.appendChild(Util.createLink('[meleegra]',Util.getInvUseUrl1158)));
-            else if (ptxt.indexOf("Flame") != -1) p.appendChild(Util.createLink('[jabanero gum]',Util.getInvUseUrl300)));
-            else if (ptxt.indexOf("Intrigue") != -1) p.appendChild(Util.createLink('[handsomeness]',Util.getInvUseUrl1162)));
-            else if (ptxt.indexOf("Mystery") != -1) p.appendChild(Util.createLink('[pickle gum]',Util.getInvUseUrl299)));
-            else if (ptxt.indexOf("the Dead") != -1) p.appendChild(Util.createLink('[marzipan skull]',Util.getInvUseUrl1163)));
-            else if (ptxt.indexOf("Torment") != -1) p.appendChild(Util.createLink('[tamarind gum]',Util.getInvUseUrl297)));
-            else if (ptxt.indexOf("Zest") != -1) p.appendChild(Util.createLink('[lime & chile gum]',Util.getInvUseUrl298)));
-    // gate 3:
-            else if (ptxt.indexOf("Hidden") != -1) p.appendChild(Util.createLink('[dod potion - object]','multiuse.php',false));
-            else if (ptxt.indexOf("Light") != -1) p.appendChild(Util.createLink('[dod potion - moxie]','multiuse.php',false));
-            else if (ptxt.indexOf("Mind") != -1) p.appendChild(Util.createLink('[dod potion - myst]','multiuse.php',false));
-            else if (ptxt.indexOf("Ogre") != -1) p.appendChild(Util.createLink('[dod potion - muscle]','multiuse.php',false));
-            else if (ptxt.indexOf("Not a Gate") != -1) p.appendChild(Util.createLink('[dod potion - teleport]','multiuse.php',false));
+            // gate 1:
+            if (ptxt.indexOf("Suc Rose") != -1) {
+                p.appendChild(Util.createLink('[sugar rush]', Util.getInvUseUrl(540)));
+            }
+            else if (ptxt.indexOf("Hilarity") != -1) {
+                p.appendChild(Util.createLink('[gremlin juice]', Util.getInvUseUrl(2631)));
+            }
+            else if (ptxt.indexOf("Humility") != -1) {
+                p.appendChild(Util.createLink('[wussiness]', Util.getInvUseUrl(469)));
+            }
+            else if (ptxt.indexOf("Morose Morbidity") != -1) {
+                p.appendChild(Util.createLink('[thin black candle]', Util.getInvUseUrl(620)));
+            }
+            else if (ptxt.indexOf("Slack") != -1) {
+                p.appendChild(Util.createLink('[mick\'s IVH rub]', Util.getInvUseUrl(618)));
+            }
+            else if (ptxt.indexOf("Spirit") != -1) {
+                p.appendChild(Util.createLink('[pygmy pygment]', Util.getInvUseUrl(2242)));
+            }
+            else if (ptxt.indexOf("Porcupine") != -1) {
+                p.appendChild(Util.createLink('[super-spiky hair gel]', Util.getInvUseUrl(587)));
+            }
+            else if (ptxt.indexOf("Viper") != -1) {
+                p.appendChild(Util.createLink('[adder bladder]', Util.getInvUseUrl(2056)));
+            }
+            else if (ptxt.indexOf("Locked Gate") != -1) {
+                p.appendChild(Util.createLink('[Black No. 2]', Util.getInvUseUrl(2059)));
+            }// gate 2:
+            else if (ptxt.indexOf("Machismo") != -1) {
+                p.appendChild(Util.createLink('[meleegra]', Util.getInvUseUrl(1158)));
+            }
+            else if (ptxt.indexOf("Flame") != -1) {
+                p.appendChild(Util.createLink('[jabanero gum]', Util.getInvUseUrl(300)));
+            }
+            else if (ptxt.indexOf("Intrigue") != -1) {
+                p.appendChild(Util.createLink('[handsomeness]', Util.getInvUseUrl(1162)));
+            }
+            else if (ptxt.indexOf("Mystery") != -1) {
+                p.appendChild(Util.createLink('[pickle gum]', Util.getInvUseUrl(299)));
+            }
+            else if (ptxt.indexOf("the Dead") != -1) {
+                p.appendChild(Util.createLink('[marzipan skull]', Util.getInvUseUrl(1163)));
+            }
+            else if (ptxt.indexOf("Torment") != -1) {
+                p.appendChild(Util.createLink('[tamarind gum]', Util.getInvUseUrl(297)));
+            }
+            else if (ptxt.indexOf("Zest") != -1) {
+                p.appendChild(Util.createLink('[lime & chile gum]', Util.getInvUseUrl(298)));
+            }// gate 3:
+            else if (ptxt.indexOf("Hidden") != -1) {
+                p.appendChild(Util.createLink('[dod potion - object]', 'multiuse.php', false));
+            }
+            else if (ptxt.indexOf("Light") != -1) {
+                p.appendChild(Util.createLink('[dod potion - moxie]', 'multiuse.php', false));
+            }
+            else if (ptxt.indexOf("Mind") != -1) {
+                p.appendChild(Util.createLink('[dod potion - myst]', 'multiuse.php', false));
+            }
+            else if (ptxt.indexOf("Ogre") != -1) {
+                p.appendChild(Util.createLink('[dod potion - muscle]', 'multiuse.php', false));
+            }
+            else if (ptxt.indexOf("Not a Gate") != -1) {
+                p.appendChild(Util.createLink('[dod potion - teleport]', 'multiuse.php', false));
+            }
         }
         let letsgetnaked = $("p:last").text();
         if ((letsgetnaked.indexOf("path is now clear") != -1) || (letsgetnaked.indexOf("is clear") != -1))
@@ -4338,9 +4396,8 @@ function at_lair6() {
 //function at_familiar() {
 //    if ($('img:first').attr('src').indexOf('blackbird') != -1)
 //    {
-//        $('img:first').nextAll('b:first').after(Util.createLink('[map it!]',Util.getInvUseUrl2054)));
-//    }
-//}
+//        $('img:first').nextAll('b:first').after(Util.createLink('[map
+// it!]',Util.getInvUseUrl(2054))); } }
 
 // MINING: uber-twinklify all twinkly images.
 function at_mining() {
@@ -4552,17 +4609,18 @@ function at_basement() {
             aa.setAttribute('id','usephial');
             if (curphial > 0) //if the charpane sez we're already phialed, then we have to unphial first.
                 aa.setAttribute('curphial',"uneffect.php?using=Yep.&pwd=" + pwd + "&whicheffect=" + curphial);
-            aa.setAttribute('phial',Util.getInvUseUrlphial));
-            aa.addEventListener('click',function(event) {
+            aa.setAttribute('phial', Util.getInvUseUrl(phial));
+            aa.addEventListener('click', function (event) {
                 this.innerHTML = "Using Phial...";
                 if (this.getAttribute('curphial')) //remove old phial effect if present
-                GM_get( this.getAttribute('curphial'),function(details) {
-                    let ph = document.getElementById('usephial');
-                    if (details.indexOf("Effect removed.") != -1) {
-                        GM_get( ph.getAttribute('phial'),function(details2) {
-                            let ph = document.getElementById('usephial'); ph.innerHTML = "";
-                            top.frames[1].location.reload();
-                        });
+                    GM_get(this.getAttribute('curphial'), function (details) {
+                        let ph = document.getElementById('usephial');
+                        if (details.indexOf("Effect removed.") != -1) {
+                            GM_get(ph.getAttribute('phial'), function (details2) {
+                                let ph = document.getElementById('usephial');
+                                ph.innerHTML = "";
+                                top.frames[1].location.reload();
+                            });
                     }
                 });
                 else GM_get( this.getAttribute('phial'),function(details) {
@@ -4632,7 +4690,7 @@ function at_bathole() {
         let sonar = inv['563'];
     //    if (sonar === undefined) sonar = 0;
         if (sonar) {
-            $("a:last").append("<br /><center><a href='"+Util.getInvUseUrl'563')+"'><font color='blue'>Use a sonar</font></a></center>");
+            $("a:last").append("<br /><center><a href='" + Util.getInvUseUrl('563') + "'><font color='blue'>Use a sonar</font></a></center>");
         }
     });
 }
@@ -5229,7 +5287,7 @@ function spoil_wormwood() {
 function at_tutorial() {
     if (location.search.indexOf("toot") == -1) return;
     $('b:contains("Ralph")').append(
-        Util.createLink('[read]', Util.getInvUseUrl1155)));
+        Util.createLink('[read]', Util.getInvUseUrl(1155)));
 }
 
 // DESC_ITEM: Add use boxes/links to item descriptions
@@ -6044,7 +6102,7 @@ function buildPrefs() {
 // ---------------
 function at_account() { // new option menu, yay
     buildPrefs();
-    return;
+
 }
 
 // HAGNK'S/MANAGESTORE/STASH: Support autoclear for added rows

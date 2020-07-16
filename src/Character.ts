@@ -9,11 +9,19 @@ export class Character {
         });
     }
 
+    /**
+     * Get the "password" hash.
+     */
     static getHash() {
         let character = GM_getValue('character');
         return character.pwd;
     }
 
+    /**
+     * Get a value.
+     *
+     * @param key The key.
+     */
     static get(key: string) {
         let character = GM_getValue('character');
         return character[key];

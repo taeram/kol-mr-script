@@ -1,5 +1,23 @@
-export class Page_ReportBug {
-    static init() {
+export class Pages {
+    private static inventoryTab = {
+        Consumables: 1,
+        Equipment: 2,
+        Miscellaneous: 3
+    };
+
+    /**
+     * If the site is in maintenance mode, refresh the page.
+     */
+    static maintenance() {
+        window.setTimeout(function () {
+            window.location.reload();
+        }, 60000);
+    }
+
+    /**
+     * Warn users before reporting a bug that they should disable this script.
+     */
+    static reportBug() {
         $('body').prepend(
             "<div><center>" +
             "<font size=4 color='blue'>" +

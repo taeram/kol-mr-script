@@ -32,7 +32,7 @@ export class Util {
     }
 
     /**
-     * Make a request to the KoL server.
+     * GET a request from the KoL server.
      *
      * @param relativeUrl The relative URL.
      * @param callback The success callback function. Optional.
@@ -46,13 +46,6 @@ export class Util {
             onerror: function (error) {
                 if (typeof errCallback == 'function') {
                     errCallback(error);
-                } else {
-                    GM_log("GM_get Error: " + error);
-                    GM_log("status=" + error.status);
-                    GM_log("statusText=" + error.statusText);
-                    GM_log("readyState=" + error.readyState);
-                    GM_log("responseHead=" + error.responseHeaders);
-                    GM_log("responseText=" + error.responseText);
                 }
             },
             onload: function (details) {
@@ -63,14 +56,59 @@ export class Util {
         });
     }
 
+    /**
+     * POST a request to the KoL server.
+     *
+     * @param relativeUrl The relative URL.
+     * @param data The data query object.
+     * @param callback The success callback function. Optional.
+     * @param errCallback The error callback function. Optional.
+     */
+    static GM_post(relativeUrl: string, data, callback?, errCallback?) {
+        GM_xmlhttpRequest({
+            method: 'POST',
+            url: 'https://' + location.host + '/' + relativeUrl,
+            headers: {
+                "Referer": "http://" + location.host + "/game.php",
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            data: $.param(data),
+            onerror: function (error) {
+                if (typeof errCallback == 'function') {
+                    errCallback(error);
+                }
+            },
+            onload: function (details) {
+                if (typeof callback == 'function') {
+                    callback(details.responseText);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get a snarfblat url.
+     *
+     * @param id The id. Should be one of Areas.<name>.s
+     */
     static getSnarfblatUrl(id) {
         return "adventure.php?snarfblat=" + id;
     }
 
+    /**
+     * Get a place url.
+     *
+     * @param id The id.
+     */
     static getPlaceUrl(id) {
         return "place.php?whichplace=" + id;
     }
 
+    /**
+     * Get an inventory use url.
+     *
+     * @param id The id.
+     */
     static getInvUseUrl(id) {
         return "inv_use.php?pwd=" + Character.getHash() + "&which=3&whichitem=" + id;
     }

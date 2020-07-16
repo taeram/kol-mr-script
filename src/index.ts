@@ -26,8 +26,7 @@
 // ==/UserScript==
 
 import {Character} from "./Character";
-import {Page_Maint} from "./pages/Maintenance";
-import {Page_ReportBug} from "./pages/ReportBug"
+import {Pages} from "./Pages";
 import {Place_Main} from "./places/Main";
 import {Place_SeasideTown} from "./places/Main/SeasideTown";
 
@@ -40,15 +39,20 @@ if (locationId === "place") {
     }
 }
 
-if (locationId === 'adminmail') {
-    Page_ReportBug.init();
-} else if (locationId === 'maint') {
-    Page_Maint.init();
-} else if (locationId === 'main') {
-    Character.init();
-    Place_Main.init();
-} else if (locationId === 'town_wrong') {
-    Place_SeasideTown.wrongSideOfTheTracks()
+switch (locationId) {
+    case 'adminmail':
+        Pages.reportBug();
+        break;
+    case 'main':
+        Character.init();
+        Place_Main.init();
+        break;
+    case 'maint':
+        Pages.maintenance();
+        break;
+    case 'town_wrong':
+        Place_SeasideTown.wrongSideOfTheTracks()
+        break;
 }
 
 // Capture DomNodeInserts without having to use the deprecated DOMNodeInserted
