@@ -43,8 +43,11 @@ switch (locationId) {
     case 'adminmail':
         Pages.reportBug();
         break;
-    case 'main':
+    case 'charpane':
         Character.init();
+        break;
+    case 'main':
+        Character.getCharacter();
         Place_Main.init();
         break;
     case 'maint':
