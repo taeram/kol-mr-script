@@ -19,7 +19,7 @@
     "@types/node": "^14.0.23",
     "@types/terser-webpack-plugin": "^3.0.0",
     "@types/webpack": "*",
-    "ts-loader": "^8.0.0",
+    "ts-loader": "^8.4.0",
     "ts-node": "^8.10.2",
     "tsconfig-paths": "*",
     "typescript": "*",
